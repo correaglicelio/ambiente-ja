@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Ambiente Já</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Focos de calor do seu município comparados com o mesmo período do ano passado, com dados abertos do INPE.">
+<meta name="theme-color" content="#14532D">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ambiente Já">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+
+:root{
+  --i-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4.5a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8zM10.5 11h3v7h-3z'/%3E%3C/svg%3E");
+  --bg:#F3F7F4; --surface:#FFFFFF; --sunk:#E6EEE8; --ink:#12241A; --muted:#51635A; --line:#D6E1D9; --sel:#E8F1EB;
+  --accent:#1B6B3A; --accent-ink:#FFFFFF; --accent-soft:#DDEEE3; --lapis:#F28C28; --lapis-ink:#8A3B00; --lapis-soft:#FDEBD6;
+  --fogo:#E8590C; --fogo-2:#F9A66C; --verde-ano:#7FB08F;
+  --tile1:#1F7A45; --tile2:#0F3F25; --faixa:#14532D;
+  --ok:#11845B; --ok-soft:#DEF3EA; --warn:#B24A00; --warn-soft:#FBE6D2; --bad:#C2283B; --bad-soft:#FBE1E4; --none:#6B7A72; --none-soft:#E6ECE8;
+  --mc:#1B6B3A; --m-painel:#1B6B3A; --m-mapa:#D9480F; --m-rank:#B7791F; --m-bioma:#2F7D32;
+  --tp1:82%; --tk1:#fff; --tp2:78%;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r:14px; --shadow:0 1px 2px rgb(18 36 26 / .06), 0 8px 24px rgb(27 107 58 / .10);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0D1812; --surface:#14241B; --sunk:#101E16; --ink:#E5F0E8; --muted:#9DB3A5; --line:#25392D; --sel:#1B2F23;
+  --accent:#6FD08F; --accent-ink:#0D1812; --accent-soft:#1B3526; --lapis:#F5A04A; --lapis-ink:#F7B877; --lapis-soft:#3A2410;
+  --fogo:#FF7A33; --fogo-2:#8A4A22; --verde-ano:#4E8F66;
+  --faixa:#0F3A21; --tile1:#1F7A45; --tile2:#0F3F25;
+  --ok:#4FD19D; --ok-soft:#123A2C; --warn:#F2A35A; --warn-soft:#3D2A14; --bad:#F27A8A; --bad-soft:#40161E; --none:#98AAA0; --none-soft:#1E3026;
+  --mc:#6FD08F; --m-painel:#6FD08F; --m-mapa:#FF8A50; --m-rank:#E6AE52; --m-bioma:#7FD27F;
+  --tp1:62%; --tk1:#000; --tp2:40%;
+  --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0D1812; --surface:#14241B; --sunk:#101E16; --ink:#E5F0E8; --muted:#9DB3A5; --line:#25392D; --sel:#1B2F23;
+  --accent:#6FD08F; --accent-ink:#0D1812; --accent-soft:#1B3526; --lapis:#F5A04A; --lapis-ink:#F7B877; --lapis-soft:#3A2410;
+  --fogo:#FF7A33; --fogo-2:#8A4A22; --verde-ano:#4E8F66;
+  --faixa:#0F3A21; --tile1:#1F7A45; --tile2:#0F3F25;
+  --ok:#4FD19D; --ok-soft:#123A2C; --warn:#F2A35A; --warn-soft:#3D2A14; --bad:#F27A8A; --bad-soft:#40161E; --none:#98AAA0; --none-soft:#1E3026;
+  --mc:#6FD08F; --m-painel:#6FD08F; --m-mapa:#FF8A50; --m-rank:#E6AE52; --m-bioma:#7FD27F;
+  --tp1:62%; --tk1:#000; --tp2:40%;
+  --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:15px; line-height:1.45; overflow:hidden; -webkit-font-smoothing:antialiased}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:1000; background:var(--surface)}
+button,input,select{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--lapis); outline-offset:2px}
+h1,h2,h3,h4{text-wrap:balance}
+.app{height:100%; display:grid; grid-template-rows:auto auto minmax(0,1fr); grid-template-columns:minmax(0,1fr)}
+.app > *{min-width:0}
+symbol .da{fill:var(--c1, var(--accent))} symbol .db{fill:var(--c2, color-mix(in srgb, var(--c1, var(--accent)) 35%, var(--surface)))} symbol .dw{fill:var(--surface)}
+.dico{width:22px; height:22px; flex:none}
+
+/* ---------- topo e menu ---------- */
+.top{background:var(--surface); border-bottom:1px solid var(--line);
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:10px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:12px; margin-right:auto; text-decoration:none; color:inherit}
+.brand .logo{width:44px; height:44px; flex:none}
+.brand b{font-family:var(--f-display); font-weight:800; font-size:30px; letter-spacing:-.035em; line-height:1; color:var(--accent); white-space:nowrap}
+.brand b em{font-style:normal; display:inline-block; background:var(--lapis); color:#2A1200; padding:.06em .2em .1em; border-radius:.22em; transform:rotate(-5deg) translateY(-.04em); margin-left:.06em; box-shadow:0 .06em 0 rgb(0 0 0 / .18)}
+.views{display:flex; gap:2px}
+.views button{border:0; background:transparent; display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; text-align:left; font-weight:500; font-size:15px; color:var(--ink); --c1:var(--accent)}
+.views button:hover{background:var(--sel)}
+.views button[aria-pressed="true"]{background:var(--sel); color:var(--accent); font-weight:700; box-shadow:inset 3px 0 0 var(--lapis)}
+.views .breve{display:flex; align-items:center; gap:12px; padding:8px 12px; font-size:14px; color:var(--muted); --c1:var(--none); --c2:var(--none-soft)}
+.views .breve small{margin-left:auto; font-size:11px; font-weight:700; background:var(--sunk); border-radius:999px; padding:1px 7px}
+.menu-tit{font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:14px 12px 4px}
+.top .rodape{margin-top:auto; text-align:center; font-size:12px; color:var(--muted); padding:0 8px}
+.top .rodape a{color:var(--accent)}
+.autoria{margin:8px 16px 24px; padding-bottom:4px; text-align:center; font-size:12px; color:var(--muted)}
+.autoria a{color:var(--accent); text-decoration:none; overflow-wrap:anywhere}
+.autoria a:hover{text-decoration:underline}
+
+/* ---------- barra de local ---------- */
+.where{background:var(--surface); border-bottom:1px solid var(--line);
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:10px;
+  display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
+.field{display:flex; flex-direction:column; gap:3px; min-width:0}
+.field label{font-size:12.5px; font-weight:600; color:var(--muted)}
+.field select,.field input{height:42px; border:1px solid var(--line); background:var(--bg); border-radius:10px; padding:0 12px; min-width:0}
+#uf{width:96px}
+.field.cod input{width:140px; font-variant-numeric:tabular-nums; letter-spacing:.04em}
+.field.grow{flex:0 1 360px; position:relative}
+#cidade{width:100%}
+.sugbox{position:absolute; top:100%; left:0; right:0; z-index:1500; margin-top:4px; background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); padding:4px; list-style:none; max-height:320px; overflow:auto}
+.sugbox li{padding:9px 12px; border-radius:8px; cursor:pointer; display:flex; justify-content:space-between; gap:8px}
+.sugbox li small{color:var(--muted)}
+.sugbox li[aria-selected="true"],.sugbox li:hover{background:var(--sel)}
+.sugbox .vazio{color:var(--muted); cursor:default}
+.btn{height:42px; border-radius:10px; border:1px solid var(--line); background:var(--surface); padding:0 14px; font-weight:600; display:inline-flex; align-items:center; gap:8px; white-space:nowrap; text-decoration:none; color:inherit}
+.btn svg{width:18px; height:18px; flex:none}
+.btn.peq{height:36px; padding:0 12px; font-size:14px}
+.note{font-size:13px; color:var(--muted); flex-basis:100%; margin:0}
+.note:empty{display:none}
+.note.warn{color:var(--bad)}
+
+/* ---------- área principal ---------- */
+.main{min-height:0; position:relative}
+.view{height:100%; overflow:auto; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:20px 48px}
+.inner{max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:18px}
+.vhead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.vtit{display:flex; align-items:center; gap:16px; min-width:0}
+.ptile{width:56px; height:56px; border-radius:14px; flex:none; display:grid; place-items:center; background:linear-gradient(145deg, var(--tile1), var(--tile2)); box-shadow:0 6px 14px rgb(27 107 58 / .25); --c1:#fff; --c2:rgb(255 255 255 / .5)}
+.ptile .dico{width:32px; height:32px}
+.vhead h2{margin:0; font-family:var(--f-display); font-weight:800; font-size:clamp(23px, 3.2vw, 32px); letter-spacing:-.02em; line-height:1.1}
+.vhead p{margin:4px 0 0; color:var(--muted)}
+.acoes{display:flex; gap:8px; flex-wrap:wrap}
+.kpis{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px}
+.kpi{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:14px 16px; min-width:0}
+.kpi .k{font-size:13px; font-weight:600; color:var(--muted)}
+.kpi .v{font-family:var(--f-display); font-weight:800; font-size:32px; line-height:1.1; margin-top:6px; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.kpi .s{font-size:13px; color:var(--muted); margin-top:2px}
+.kpi.alerta .v{color:var(--bad)} .kpi.atencao .v{color:var(--warn)}
+.grid2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px}
+.box{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:16px; min-width:0}
+.box h3{margin:0 0 12px; font-size:16px; font-family:var(--f-display); font-weight:600}
+.box h3 small{font-family:var(--f-body); font-weight:400; color:var(--muted); font-size:13px}
+.src{font-size:12.5px; color:var(--muted); margin:0}
+.src a{color:var(--accent)}
+.aviso{display:flex; gap:12px; align-items:flex-start; background:var(--lapis-soft); border:1px solid color-mix(in srgb, var(--lapis) 45%, transparent); border-radius:var(--r); padding:12px 14px; font-size:14px}
+.aviso svg{width:22px; height:22px; color:var(--lapis-ink); flex:none; margin-top:1px}
+
+/* redes */
+.r1{--c:var(--r-fed)} .r2{--c:var(--r-est)} .r3{--c:var(--r-mun)} .r4{--c:var(--r-pri)}
+.stack{display:flex; height:24px; border-radius:7px; overflow:hidden; background:var(--sunk)}
+.stack div{height:100%; background:var(--c)}
+.leg{display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:13px; color:var(--muted)}
+.leg span{display:inline-flex; align-items:center; gap:6px}
+.leg i{width:10px; height:10px; border-radius:2px; background:var(--c)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14px}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-size:12px; letter-spacing:.04em; color:var(--muted); font-weight:600; background:var(--surface)}
+td.n,th.n{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+td  td .dot.dot{background:var(--bc, var(--none))}
+.dot{display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--c); margin-right:8px}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--sel)}
+tr.tot td{font-weight:700; border-bottom:0}
+
+/* comparação município × estado */
+.cmp{display:grid; gap:10px}
+.cmp-item{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 10px; align-items:baseline}
+.cmp-item .nome{font-size:14px; min-width:0}
+.cmp-item .pct{font-family:var(--f-display); font-weight:800; font-size:17px; font-variant-numeric:tabular-nums; text-align:right}
+.cmp-item .trk{grid-column:1 / -1; position:relative; height:10px; background:var(--sunk); border-radius:5px}
+.cmp-item .trk i{position:absolute; inset:0 auto 0 0; border-radius:5px; background:var(--accent)}
+.cmp-item .trk b{position:absolute; top:-3px; bottom:-3px; width:3px; border-radius:2px; background:var(--lapis-ink)}
+.cmp-item .sub{grid-column:1 / -1; font-size:12.5px; color:var(--muted)}
+.cmp-item.ruim .pct{color:var(--bad)} .cmp-item.ruim .trk i{background:var(--bad)}
+.cmp-leg{display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin:0 0 12px}
+.cmp-leg i{display:inline-block; width:14px; height:8px; border-radius:3px; background:var(--accent); margin-right:5px; vertical-align:0}
+.cmp-leg i.ref{width:3px; height:14px; background:var(--lapis-ink); vertical-align:-3px}
+
+/* lista de escolas */
+.filtros{display:flex; flex-direction:column; gap:10px}
+.chips{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.chips .rot{font-size:12.5px; font-weight:600; color:var(--muted); margin-right:4px}
+.chip{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:5px 12px 5px 9px; font-size:13.5px; font-weight:600; display:inline-flex; align-items:center; gap:7px}
+.chip i{width:10px; height:10px; border-radius:50%; background:var(--c, var(--accent)); flex:none}
+.chip[aria-pressed="false"]{color:var(--muted); background:transparent}
+.chip[aria-pressed="false"] i{background:transparent; box-shadow:inset 0 0 0 2px var(--c, var(--accent))}
+.linha-busca{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.busca{height:42px; border:1px solid var(--line); background:var(--bg); border-radius:10px; padding:0 12px; flex:1 1 240px; min-width:0}
+.busca.cod{flex:0 1 170px; font-variant-numeric:tabular-nums; letter-spacing:.04em}
+.linha-busca select{height:42px; border:1px solid var(--line); background:var(--bg); border-radius:10px; padding:0 10px}
+.tog{display:inline-flex; align-items:center; gap:7px; font-size:14px; cursor:pointer}
+.tog input{width:18px; height:18px; accent-color:var(--accent)}
+.resumo-lista{font-size:13.5px; color:var(--muted)}
+.resumo-lista b{color:var(--ink)}
+.lista{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap:10px; align-items:start}
+.esc{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:12px 14px 12px 12px; display:grid; grid-template-columns:4px minmax(0,1fr) auto; gap:0 12px; cursor:pointer; text-align:left; width:100%}
+.esc:hover{border-color:var(--accent)}
+.esc .stripe{grid-row:1 / span 3; border-radius:4px; background:var(--c)}
+.esc h4{margin:0; font-size:15px; line-height:1.25; font-weight:700; overflow-wrap:anywhere}
+.esc h4 .inep{display:block; margin-top:3px; font-family:var(--f-body); font-size:12.5px; font-weight:500; color:var(--muted); font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.esc .mat{font-family:var(--f-display); font-weight:800; font-size:18px; text-align:right; line-height:1.1; font-variant-numeric:tabular-nums}
+.esc .mat small{display:block; font-family:var(--f-body); font-weight:500; font-size:11.5px; color:var(--muted)}
+.esc .meta{grid-column:2 / span 2; display:flex; flex-wrap:wrap; gap:5px; margin-top:7px}
+.esc .etapas{grid-column:2 / span 2; font-size:13px; color:var(--muted); margin-top:6px}
+.esc .falta{grid-column:2 / span 2; font-size:13px; color:var(--bad); margin-top:6px; font-weight:600}
+.pill{font-size:11.5px; font-weight:700; border-radius:999px; padding:2px 8px; background:var(--sunk); color:var(--muted); white-space:nowrap}
+.pill.rede{color:var(--c); background:color-mix(in srgb, var(--c) 14%, transparent)}
+.pill.paral{background:var(--bad-soft); color:var(--bad)}
+.pill.copiar{border:0; cursor:pointer; background:var(--accent-soft); color:var(--accent); font-family:var(--f-body)}
+.pill.dif{background:var(--lapis-soft); color:var(--lapis-ink)}
+.mais{justify-self:center}
+.vazio-lista{padding:28px 16px; text-align:center; color:var(--muted); grid-column:1 / -1}
+.vazio-lista b{display:block; color:var(--ink); font-family:var(--f-display); font-size:18px; margin-bottom:4px}
+
+/* ficha da escola (janela no computador, folha de baixo no celular) */
+.ficha-fundo{position:fixed; inset:0; z-index:2500; background:rgb(10 14 30 / .45); display:grid; place-items:center;
+  padding:max(16px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) max(16px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px))}
+.ficha{background:var(--bg); width:min(760px, 100%); max-height:100%; overflow:auto; border-radius:18px; box-shadow:var(--shadow); display:flex; flex-direction:column}
+.ficha-cab{position:sticky; top:0; z-index:2; background:var(--surface); border-bottom:1px solid var(--line); padding:16px 18px 14px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 12px}
+.ficha-cab h3{margin:0; font-family:var(--f-display); font-weight:800; font-size:21px; line-height:1.15; letter-spacing:-.01em; overflow-wrap:anywhere}
+.ficha-cab .meta{grid-column:1; display:flex; flex-wrap:wrap; gap:5px}
+.fechar{grid-row:1 / span 2; grid-column:2; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:var(--bg); display:grid; place-items:center}
+.fechar svg{width:20px; height:20px}
+.ficha-corpo{padding:16px 18px 22px; display:flex; flex-direction:column; gap:14px}
+.nums{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px}
+.num{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 12px}
+.num b{display:block; font-family:var(--f-display); font-weight:800; font-size:24px; line-height:1.1; font-variant-numeric:tabular-nums}
+.num span{font-size:12.5px; color:var(--muted)}
+.dl{display:grid; grid-template-columns:minmax(0,1fr) auto; font-size:14px}
+.dl > span{padding:6px 0; border-bottom:1px solid var(--line)}
+.dl > span:nth-child(even){text-align:right; font-variant-numeric:tabular-nums; font-weight:600}
+.infra{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 16px; font-size:14px}
+.infra span{display:flex; gap:8px; align-items:flex-start; padding:4px 0}
+.infra svg{width:18px; height:18px; flex:none; margin-top:1px}
+.infra .sim{color:var(--ok)} .infra .nao{color:var(--none)} .infra .ruim{color:var(--bad); font-weight:600}
+.infra .nao + em{color:var(--muted)}
+.infra em{font-style:normal}
+
+/* ---------- painel ---------- */
+.rs-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap:12px}
+.rs-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:16px; display:flex; flex-direction:column; gap:10px; min-width:0; cursor:pointer; transition:border-color .15s, box-shadow .15s; text-align:left; font:inherit; color:inherit}
+.rs-card:hover{border-color:var(--accent); box-shadow:var(--shadow)}
+.rs-card.rs-alerta{border:2px solid var(--bad); box-shadow:0 0 0 3px color-mix(in srgb, var(--bad) 14%, transparent)}
+.rs-card.rs-atencao{border:2px solid var(--warn)}
+.rs-card header{display:flex; align-items:center; gap:10px}
+.rs-card h3{margin:0; font-size:15px; font-weight:700}
+.rs-ic{width:40px; height:40px; border-radius:10px; display:grid; place-items:center; background:var(--accent-soft); flex:none}
+.rs-ic .dico{width:24px; height:24px}
+.rs-big{font-family:var(--f-display); font-size:30px; font-weight:800; letter-spacing:-.02em; line-height:1.05; font-variant-numeric:tabular-nums}
+.rs-big small{display:block; font-family:var(--f-body); font-size:13.5px; font-weight:500; color:var(--muted); letter-spacing:0; margin-top:3px}
+/* balões de ajuda (como no Saúde Já) */
+.tip{cursor:help; text-decoration:underline dotted color-mix(in srgb, currentColor 55%, transparent); text-underline-offset:3px; text-decoration-thickness:1.5px; border-radius:3px}
+.tip::after{content:""; display:inline-block; width:.85em; height:.85em; margin-left:.28em; vertical-align:-.08em; opacity:.55;
+  background:currentColor; -webkit-mask:var(--i-info) center/contain no-repeat; mask:var(--i-info) center/contain no-repeat}
+.tip:hover::after,.tip:focus-visible::after{opacity:.9}
+.bubble{position:fixed; z-index:3000; max-width:min(320px, calc(100vw - 24px)); background:var(--ink); color:var(--bg); font-family:var(--f-body); font-size:13.5px; line-height:1.45; font-weight:400; letter-spacing:0; text-transform:none;
+  padding:10px 13px; border-radius:9px; box-shadow:var(--shadow); pointer-events:none; text-align:left}
+.bubble b{font-weight:700}
+.bubble::before{content:""; position:absolute; left:var(--ax, 50%); width:10px; height:10px; background:var(--ink); transform:translateX(-50%) rotate(45deg)}
+.bubble[data-pos="top"]::before{bottom:-5px}
+.bubble[data-pos="bottom"]::before{top:-5px}
+/* mapa das escolas (Leaflet + OpenStreetMap) */
+#mapa{height:440px; border-radius:var(--r); overflow:hidden; background:var(--sunk); border:1px solid var(--line)}
+@media (max-width:600px){ #mapa{height:340px} }
+.leaflet-container{font-family:var(--f-body)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+.leaflet-popup-content{margin:12px 14px; font-size:13.5px; line-height:1.45}
+.leaflet-popup-content b{font-size:14.5px}
+.leaflet-popup-content .btn{margin-top:8px; padding:6px 12px; font-size:13px}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+:root[data-tema="escuro"] .leaflet-tile-pane, :root.escuro .leaflet-tile-pane{filter:brightness(.75) invert(1) contrast(2.6) hue-rotate(200deg) saturate(.35) brightness(.75)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .leaflet-tile-pane{filter:brightness(.75) invert(1) contrast(2.6) hue-rotate(200deg) saturate(.35) brightness(.75)} }
+:root[data-theme="dark"] .leaflet-tile-pane{filter:brightness(.75) invert(1) contrast(2.6) hue-rotate(200deg) saturate(.35) brightness(.75)}
+.mapa-leg{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--muted); margin-top:10px}
+.mapa-leg i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px; border:2px solid #fff; box-shadow:0 0 0 1px rgb(0 0 0 / .15)}
+.ficha .contato a{color:var(--accent); font-weight:600}
+/* mini-tabela dos cards (opção A) */
+.rs-tab{width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums}
+.rs-tab th br + span{font-size:11px}
+.rs-tab th{vertical-align:bottom; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); text-align:left; padding:0 0 4px; border-bottom:1px solid var(--line); white-space:nowrap}
+.rs-tab td{padding:5px 0; border-bottom:1px solid var(--line); vertical-align:baseline}
+.rs-tab tr:last-child td{border-bottom:0}
+.rs-tab th + th, .rs-tab td + td{padding-left:10px}
+.rs-tab .n{text-align:right; white-space:nowrap} .rs-tab td.n b{font-weight:800}
+.rs-tab .ok{color:var(--ok)} .rs-tab .bad{color:var(--bad)} .rs-tab .warn{color:var(--warn)} .rs-tab .fraco{color:var(--muted)}
+.rs-tab .dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:7px; vertical-align:1px}
+@media (max-width:380px){ .rs-tab{font-size:13px} .rs-tab th + th, .rs-tab td + td{padding-left:6px} }
+.rs-lista{margin:0; padding:0; list-style:none; display:grid; gap:5px; font-size:14px}
+.rs-lista b{font-variant-numeric:tabular-nums}
+.rs-pill{display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:1px 8px; font-weight:700; font-size:12.5px; white-space:nowrap; margin-right:4px}
+.rs-pill::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor}
+.rs-pill.ok{background:var(--ok-soft); color:var(--ok)} .rs-pill.warn{background:var(--warn-soft); color:var(--warn)} .rs-pill.bad{background:var(--bad-soft); color:var(--bad)}
+.rs-link{display:inline-flex; align-items:center; gap:4px; font-weight:700; color:var(--accent); font-size:14px; margin-top:auto}
+.rs-leg{display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin:-4px 0 0}
+.rs-leg i{display:inline-block; width:14px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; border:2px solid var(--c)}
+.rs-card.breve{cursor:default; background:transparent; border-style:dashed; --c1:var(--none); --c2:var(--none-soft)}
+.rs-card.breve:hover{border-color:var(--line); box-shadow:none}
+.rs-card.breve .rs-ic{background:var(--none-soft)}
+.rs-card.breve p{margin:0; font-size:13.5px; color:var(--muted)}
+/* cor de cada módulo (como no Saúde Já) */
+[data-view="painel"], [data-ir="painel"], #v-painel {--mc:var(--m-painel)}
+[data-view="escolas"], [data-ir="escolas"], #v-escolas {--mc:var(--m-escolas)}
+[data-view="aprendizagem"], [data-ir="aprendizagem"], #v-aprendizagem {--mc:var(--m-aprend)}
+[data-view="gastos"], [data-ir="gastos"], #v-gastos {--mc:var(--m-gastos)}
+[data-view="fluxo"], [data-ir="fluxo"], #v-fluxo {--mc:var(--m-fluxo)}
+[data-view="merenda"], [data-ir="merenda"], #v-merenda {--mc:var(--m-merenda)}
+[data-view="pdde"], [data-ir="pdde"], #v-pdde {--mc:var(--m-pdde)}
+[data-view="transporte"], [data-ir="transporte"], #v-transporte {--mc:var(--m-transp)}
+.mod-fluxo{--mc:var(--m-fluxo)} .mod-merenda{--mc:var(--m-merenda)} .mod-pdde{--mc:var(--m-pdde)} .mod-transp{--mc:var(--m-transp)}
+.views button{--c1:var(--mc, var(--accent)); --c2:color-mix(in srgb, var(--mc, var(--accent)) 38%, var(--surface))}
+.views button[aria-pressed="true"]{background:color-mix(in srgb, var(--mc, var(--accent)) 13%, var(--surface)); color:var(--ink); box-shadow:inset 3px 0 0 var(--mc, var(--lapis))}
+.views button:hover{background:color-mix(in srgb, var(--mc, var(--accent)) 8%, var(--surface))}
+.views .breve{--c1:color-mix(in srgb, var(--mc) 70%, var(--surface)); --c2:color-mix(in srgb, var(--mc) 25%, var(--surface))}
+.ptile{background:linear-gradient(145deg, color-mix(in srgb, var(--mc, var(--accent)) var(--tp1), var(--tk1)), color-mix(in srgb, var(--mc, var(--accent)) var(--tp2), #000)); box-shadow:0 6px 14px color-mix(in srgb, var(--mc, var(--accent)) 30%, transparent)}
+/* cards do Painel: faixa e ícone na cor do módulo, título forte */
+.rs-card{position:relative; overflow:hidden; padding-top:20px}
+.rs-card::before{content:""; position:absolute; inset:0 0 auto 0; height:5px; background:var(--mc, var(--accent))}
+.rs-card:hover{border-color:var(--mc, var(--accent))}
+.rs-card header{gap:12px}
+.rs-ic{width:46px; height:46px; border-radius:13px; background:linear-gradient(145deg, color-mix(in srgb, var(--mc, var(--accent)) var(--tp1), var(--tk1)), color-mix(in srgb, var(--mc, var(--accent)) var(--tp2), #000));
+  box-shadow:0 5px 12px color-mix(in srgb, var(--mc, var(--accent)) 30%, transparent); --c1:#fff; --c2:rgb(255 255 255 / .55)}
+.rs-ic .dico{width:27px; height:27px}
+.rs-card h3{font-family:var(--f-display); font-size:20px; font-weight:800; letter-spacing:-.015em; line-height:1.15; color:var(--mc, var(--ink))}
+:root .rs-card h3{color:color-mix(in srgb, var(--mc, var(--ink)) 82%, var(--ink))}
+.rs-card.breve::before{opacity:.45}
+.rs-card.breve .rs-ic{background:color-mix(in srgb, var(--mc) 16%, var(--surface)); box-shadow:none; --c1:color-mix(in srgb, var(--mc) 75%, var(--surface)); --c2:color-mix(in srgb, var(--mc) 30%, var(--surface))}
+.rs-card.breve h3{color:var(--muted)}
+
+.rs-sec{margin:6px 0 0; font-family:var(--f-display); font-size:19px; font-weight:800; letter-spacing:-.01em}
+
+/* aprendizagem */
+.escopo{display:inline-flex; background:var(--sunk); border-radius:999px; padding:3px; max-width:100%; overflow-x:auto; scrollbar-width:none}
+.escopo button{border:0; background:transparent; padding:7px 14px; border-radius:999px; font-weight:700; font-size:14px; color:var(--muted); white-space:nowrap}
+.escopo button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:inset 0 -3px 0 var(--lapis), var(--shadow)}
+.escopo button:disabled{opacity:.45; cursor:default}
+.abas-apr{align-self:flex-start}
+.abas-apr button{font-size:15px; padding:8px 18px}
+.seletores{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center}
+.seletores .rot{font-size:12.5px; font-weight:600; color:var(--muted); margin-right:6px}
+.kpi .var{font-size:13px; font-weight:700; margin-top:2px}
+.var.sobe{color:var(--ok)} .var.desce{color:var(--bad)} .var.igual{color:var(--muted)}
+.grafico{width:100%; height:auto; display:block}
+.grafico text{fill:var(--muted); font-family:var(--f-body); font-size:12px}
+.grafico .rot-val{fill:var(--ink); font-weight:700; font-size:12.5px}
+.grafico .grade{stroke:var(--line); stroke-width:1}
+.leg-g{display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); margin-top:8px}
+.leg-g span{display:inline-flex; align-items:center; gap:7px}
+.leg-g i{width:22px; height:0; border-top:3px solid var(--c)}
+.leg-g i.trac{border-top-style:dashed} .leg-g i.pont{border-top-style:dotted}
+.leg-g i.meta{width:10px; height:10px; border:2px solid var(--c); border-radius:2px; transform:rotate(45deg)}
+.rank{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.rank b{font-family:var(--f-display); font-weight:800; font-size:34px; line-height:1}
+.rank span{color:var(--muted)}
+.faixas{display:flex; height:12px; border-radius:6px; overflow:hidden; margin:12px 0 4px; background:var(--sunk)}
+.faixas div{height:100%}
+.ideb-n{font-family:var(--f-display); font-weight:800; font-variant-numeric:tabular-nums}
+td.ideb-baixo{color:var(--bad); font-weight:700}
+.explica{font-size:14px; color:var(--muted)}
+.explica p{margin:0 0 8px} .explica b{color:var(--ink)}
+.esc .ideb{grid-column:2 / span 2; font-size:13px; margin-top:6px; color:var(--ink)}
+.esc .ideb b{font-variant-numeric:tabular-nums}
+.rs-periodo{font-size:12.5px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; display:flex; gap:6px; align-items:flex-start}
+.rs-periodo svg{width:14px; height:14px; flex:none; margin-top:2px}
+.rs-big.alerta{color:var(--bad)} .rs-big.atencao{color:var(--warn)}
+/* gastos */
+.medidor{display:grid; gap:5px}
+.medidor .rot{display:flex; justify-content:space-between; gap:12px; font-size:14px; align-items:baseline}
+.medidor .rot b{font-family:var(--f-display); font-weight:800; font-size:22px; font-variant-numeric:tabular-nums}
+.barra{position:relative; height:12px; background:var(--sunk); border-radius:6px}
+.barra i{position:absolute; inset:0 auto 0 0; background:var(--ok); border-radius:6px; max-width:100%}
+.barra.ruim i{background:var(--bad)} .barra.parcial i{background:var(--accent)}
+.barra em{position:absolute; top:-4px; bottom:-4px; width:3px; border-radius:2px; background:var(--ink)}
+.barra u{position:absolute; top:-3px; bottom:-3px; width:3px; border-radius:2px; background:var(--r-est); text-decoration:none}
+.medidor small{font-size:12.5px; color:var(--muted)}
+.rs-sub{margin:2px 0 -4px; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted)}
+.empilha{display:grid; gap:12px}
+@media (min-width:821px){ .empilha .medidores{grid-template-columns:1fr 1fr; column-gap:32px} }
+.legenda-m{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12.5px; color:var(--muted); margin:-4px 0 14px}
+.legenda-m span{display:inline-flex; align-items:center; gap:6px}
+.legenda-m i{width:3px; height:14px; border-radius:2px; background:var(--ink)} .legenda-m i.md{background:var(--r-est)}
+.medidores{display:grid; gap:18px}
+/* fluxo: barra empilhada aprovação / reprovação / abandono */
+.rend{display:grid; gap:14px}
+.rend-l .rot{display:flex; justify-content:space-between; gap:10px; font-size:14px; margin-bottom:5px}
+.rend-l .rot b{font-weight:700}
+.rend-b{display:flex; height:22px; border-radius:6px; overflow:hidden; background:var(--sunk)}
+.rend-b i{display:block; height:100%} .rend-b .ap{background:var(--ok)} .rend-b .rp{background:var(--warn)} .rend-b .ab{background:var(--bad)}
+.rend-n{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; color:var(--muted); margin-top:4px}
+.rend-n b{color:var(--ink); font-variant-numeric:tabular-nums}
+.rend-n i{display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; vertical-align:0}
+.posicoes{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.pos-item{border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:grid; gap:6px; align-content:start}
+.pos-item.destaque{border-color:color-mix(in srgb, var(--mc, var(--accent)) 45%, var(--line)); background:color-mix(in srgb, var(--mc, var(--accent)) 7%, var(--surface))}
+.pos-tit{font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted)}
+.pos-item .rank b{font-size:38px}
+.pos-sub{margin:0; font-size:14px} .pos-sub b.bad{color:var(--bad)}
+@media (max-width:600px){ .posicoes{grid-template-columns:1fr} }
+.selo-st{display:inline-flex; gap:6px; align-items:center; border-radius:999px; padding:3px 10px; font-weight:700; font-size:13px}
+.selo-st.ok{background:var(--ok-soft); color:var(--ok)} .selo-st.bad{background:var(--bad-soft); color:var(--bad)} .selo-st.warn{background:var(--warn-soft); color:var(--warn)}
+.envio{display:flex; gap:12px; align-items:flex-start; border-radius:var(--r); padding:12px 14px; font-size:14px; border:1px solid var(--line); background:var(--surface)}
+.envio.atrasado{background:var(--warn-soft); border-color:color-mix(in srgb, var(--warn) 40%, transparent)}
+.envio.grave{background:var(--bad-soft); border-color:color-mix(in srgb, var(--bad) 40%, transparent)}
+.envio svg{width:22px; height:22px; flex:none; margin-top:1px}
+.colunas{width:100%; height:auto; display:block}
+.colunas text{fill:var(--muted); font-family:var(--f-body); font-size:12px}
+.colunas .val{fill:var(--ink); font-weight:700; paint-order:stroke; stroke:var(--surface); stroke-width:4px; stroke-linejoin:round}
+td.ruim{color:var(--bad); font-weight:700}
+.loading{position:absolute; inset:0; display:grid; place-items:center; background:color-mix(in srgb, var(--bg) 75%, transparent); z-index:900; font-weight:700; color:var(--muted)}
+.toast{position:fixed; left:50%; bottom:calc(88px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); z-index:3000; background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-weight:700; font-size:14px; box-shadow:var(--shadow); max-width:calc(100% - 32px)}
+.tip{cursor:help; text-decoration:underline dotted color-mix(in srgb, currentColor 55%, transparent); text-underline-offset:3px}
+.tabbar{display:none}
+
+/* ---------- celular ---------- */
+@media (max-width: 820px){
+  .app{grid-template-rows:auto auto minmax(0,1fr) auto}
+  .top{background:var(--faixa); border-bottom:0; color:#fff; padding-block:10px}
+  body::before{background:var(--faixa)}
+  .top .brand b{color:#fff} .top .brand b em{background:#F28C28; color:#2A1200} .top .brand .logo{border-radius:10px; box-shadow:0 0 0 1.5px rgb(255 255 255 / .35)}
+  .brand .logo{width:38px; height:38px} .brand b{font-size:26px}
+  .top .views,.top .menu-tit,.top .rodape{display:none}
+  .field.grow{flex:1 1 calc(100% - 110px)}
+  .field.cod{order:4; flex:0 0 150px} .field.cod input{width:100%}
+  #todo-estado{order:5; align-self:flex-end; padding-bottom:10px !important; flex:1 1 0; height:auto; border:0; background:none; padding:0; justify-content:flex-start; color:var(--accent); font-size:14px; text-decoration:underline; text-underline-offset:3px}
+  .kpis{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+  .nums{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .infra{grid-template-columns:minmax(0,1fr)}
+  .ptile{width:46px; height:46px; border-radius:12px} .ptile .dico{width:26px; height:26px}
+  .kpi .v{font-size:27px}
+  .seletores > div{display:flex; flex-direction:column; gap:4px; max-width:100%}
+  .escopo button{padding:6px 11px; font-size:13.5px}
+  .ficha-fundo{place-items:end stretch; padding:0}
+  .ficha{width:100%; max-height:92%; border-radius:18px 18px 0 0; padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tabbar{display:grid; grid-template-columns:repeat(var(--n, 2), minmax(0,1fr)); background:var(--surface); border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom,0px); padding-left:env(safe-area-inset-left,0px); padding-right:env(safe-area-inset-right,0px)}
+  .tabbar button{border:0; background:transparent; padding:8px 0 10px; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:12px; font-weight:700; color:var(--muted)}
+  .tabbar button{font-size:clamp(9px, 2.6vw, 12px); letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:clip}
+  .tabbar button .dico{width:24px; height:24px; --c1:color-mix(in srgb, var(--mc) 55%, var(--muted)); --c2:color-mix(in srgb, var(--mc) 22%, var(--surface))}
+  .tabbar button[aria-pressed="true"]{color:var(--ink)}
+  .tabbar button[aria-pressed="true"]{color:var(--mc)}
+  .tabbar button[aria-pressed="true"] .dico{--c1:var(--mc); --c2:color-mix(in srgb, var(--mc) 40%, var(--surface))}
+}
+@media (min-width: 821px){
+  .app{grid-template-columns:236px minmax(0,1fr); grid-template-rows:auto minmax(0,1fr)}
+  .top{grid-column:1; grid-row:1 / span 2; flex-direction:column; align-items:stretch; flex-wrap:nowrap; gap:18px; border-bottom:0; border-right:1px solid var(--line); padding:22px 14px; overflow:auto}
+  .brand{margin-right:0; padding:0 8px}
+  .views{flex-direction:column}
+  .where{grid-column:2; grid-row:1}
+  .main{grid-column:2; grid-row:2}
+}
+@media (max-width: 400px){ .kpi .v{font-size:24px} .vhead h2{font-size:22px} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+/* ---------- Ambiente Já ---------- */
+.fogo{color:var(--fogo)}
+.brand b{font-size:25px}
+@media (max-width:820px){ .brand b{font-size:26px} }
+.kpi.fogo .v{color:var(--fogo)}
+.kpi.sobe .v{color:var(--warn)} .kpi.desce .v{color:var(--ok)}
+.chart{display:flex; align-items:flex-end; gap:4px; height:190px; padding-top:22px}
+.chart .c{flex:1 1 0; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; position:relative}
+.chart .c .val{font-size:10.5px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; margin-bottom:2px}
+.chart .c i{display:block; width:100%; max-width:34px; border-radius:5px 5px 0 0; background:var(--verde-ano); min-height:2px}
+.chart .c.atual i{background:var(--fogo)}
+.chart .c.atual .val{color:var(--fogo)}
+.chart .c.ant i{background:var(--accent)}
+.chart .c b{font-size:11px; font-weight:600; color:var(--muted); margin-top:5px; white-space:nowrap}
+.chart .c.atual b{color:var(--ink); font-weight:800}
+.mchart{display:flex; align-items:flex-end; gap:2px; height:170px; padding-top:6px}
+.mchart .g{flex:1 1 0; min-width:0; height:100%; display:flex; flex-direction:column; align-items:center}
+.mchart .bars{flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; gap:2px}
+.mchart .bars i{display:block; flex:1 1 0; max-width:14px; border-radius:3px 3px 0 0; min-height:0}
+.mchart .bars i.a{background:var(--accent)} .mchart .bars i.b{background:var(--fogo)}
+.mchart .bars i.parc{background:repeating-linear-gradient(45deg, var(--fogo) 0 3px, var(--fogo-2) 3px 6px)}
+.mchart .g b{font-size:10.5px; font-weight:600; color:var(--muted); margin-top:4px; text-transform:capitalize}
+.mchart .g.mes-ref b{color:var(--ink); font-weight:800}
+.leg i.sw{border-radius:3px}
+.dias{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:6px; align-items:end; height:120px}
+.dias .d{height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:3px}
+.dias .d i{display:block; width:100%; max-width:36px; background:var(--fogo); border-radius:5px 5px 0 0; min-height:2px}
+.dias .d span{font-size:11px; color:var(--muted)} .dias .d em{font-style:normal; font-size:12px; font-weight:800; font-variant-numeric:tabular-nums}
+.dias .d.zero i{background:var(--sunk)}
+.sel td{background:var(--lapis-soft)!important; font-weight:700}
+.var-sobe{color:var(--warn); font-weight:700} .var-desce{color:var(--ok); font-weight:700} .var-igual{color:var(--muted)}
+.minibar{display:inline-block; height:8px; border-radius:4px; background:var(--fogo); vertical-align:middle; min-width:2px}
+.stackb{display:flex; height:26px; border-radius:7px; overflow:hidden; background:var(--sunk)}
+.stackb div{height:100%}
+.bio-Amazônia{--bc:#2E7D32} .bio-Cerrado{--bc:#C98A00} .bio-Pantanal{--bc:#1E88C7} .bio-Mata\ Atlântica{--bc:#7B3FA0} .bio-Caatinga{--bc:#B5651D} .bio-Pampa{--bc:#6B8E23}
+.stackb div,.dot{background:var(--bc, var(--none))}
+.dot{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:8px}
+.mapabar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px}
+.leg-pt{display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin-top:8px}
+.leg-pt i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px}
+details.tabela summary{cursor:pointer; font-weight:600; color:var(--accent); margin-top:10px}
+.sem-dado{color:var(--muted); font-size:14px; padding:6px 0}
+@media (max-width:600px){ .chart .c .val{font-size:9.5px} .chart{gap:3px} .minibar{display:none} th,td{padding-left:6px; padding-right:6px} }
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <symbol id="d-logo" viewBox="0 0 64 64"><defs><linearGradient id="g-logo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F7A45"/><stop offset="1" stop-color="#0F3F25"/></linearGradient><linearGradient id="g-fogo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB454"/><stop offset="1" stop-color="#E8590C"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#g-logo)"/><path d="M33 8c1 9 13 15 13 29 0 9-6 17-14 17s-14-7-14-16c0-7 4-11 7-14 0 5 2 8 5 9-2-9 0-18 3-25z" fill="url(#g-fogo)"/><path d="M32 30c1 5 7 8 7 14 0 5-3 8-7 8s-7-3-7-8c0-4 3-6 4-9 1 2 2 3 3 3z" fill="#FFD98A"/><path d="M8 58c8-4 14-4 24 0 10-4 16-4 24 0v6H8z" fill="#2E9E5B" opacity=".9"/></symbol>
+  <symbol id="d-painel" viewBox="0 0 24 24"><rect class="da" x="3" y="3" width="8" height="8" rx="2"/><rect class="db" x="13" y="3" width="8" height="8" rx="2"/><rect class="db" x="3" y="13" width="8" height="8" rx="2"/><rect class="da" x="13" y="13" width="8" height="8" rx="2"/></symbol>
+  <symbol id="d-mapa" viewBox="0 0 24 24"><path class="db" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle class="dw" cx="12" cy="9" r="2.6"/></symbol>
+  <symbol id="d-rank" viewBox="0 0 24 24"><rect class="db" x="3" y="12" width="4.5" height="9" rx="1"/><rect class="da" x="9.8" y="4" width="4.5" height="17" rx="1"/><rect class="db" x="16.5" y="8" width="4.5" height="13" rx="1"/></symbol>
+  <symbol id="d-bioma" viewBox="0 0 24 24"><path class="da" d="M20 3C9 3 4 8 4 14c0 1.7.5 3.2 1.4 4.4C6.6 12 11 9 16 8c-4 2.5-7 6-8.4 11.2C9 20.4 10.4 21 12 21c6 0 8-6 8-18z"/><path class="db" d="M5 21c0-3 1.5-5.5 4-7"/></symbol>
+  <symbol id="d-fogo" viewBox="0 0 24 24"><path class="da" d="M12.5 2c.4 3.600 5.500 6 5.500 11 0 3.900-2.800 7-6 7s-6-2.800-6-6.500c0-2.800 1.700-4.600 3-5.800 0 2 1 3.200 2 3.600-.8-3.600 0-7 1.500-9.300z"/><path class="db" d="M12 12c.5 2 3 3.200 3 5.500 0 1.900-1.300 3.500-3 3.500s-3-1.600-3-3.500c0-1.600 1.200-2.500 1.700-3.800.4.800.8 1.300 1.300 1.300z"/></symbol>
+</defs></svg>
+
+<div class="app" id="app">
+  <header class="top">
+    <a class="brand" href="#painel" aria-label="Ambiente Já, início">
+      <svg class="logo" aria-hidden="true"><use href="#d-logo"/></svg>
+      <b>Ambiente <em>Já</em></b>
+    </a>
+    <nav class="views" aria-label="Seções">
+      <button type="button" data-view="painel" aria-pressed="true" style="--c1:var(--m-painel)"><svg class="dico" aria-hidden="true"><use href="#d-painel"/></svg><span>Painel</span></button>
+      <button type="button" data-view="mapa" aria-pressed="false" style="--c1:var(--m-mapa)"><svg class="dico" aria-hidden="true"><use href="#d-mapa"/></svg><span>Mapa dos focos</span></button>
+      <button type="button" data-view="ranking" aria-pressed="false" style="--c1:var(--m-rank)"><svg class="dico" aria-hidden="true"><use href="#d-rank"/></svg><span>Ranking</span></button>
+      <button type="button" data-view="biomas" aria-pressed="false" style="--c1:var(--m-bioma)"><svg class="dico" aria-hidden="true"><use href="#d-bioma"/></svg><span>Biomas</span></button>
+    </nav>
+    <p class="rodape">Dados abertos do INPE.<br>Criado por <b>Glicélio Corrêa</b><br><a href="mailto:glicelio.santos@edu.mt.gov.br">glicelio.santos@edu.mt.gov.br</a><br>© 2026 · Licença MIT</p>
+  </header>
+
+  <section class="where" aria-label="Escolher local">
+    <div class="field"><label for="uf">Estado</label><select id="uf"></select></div>
+    <div class="field grow"><label for="cidade">Município</label>
+      <input id="cidade" placeholder="Digite o nome da cidade" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sug" aria-autocomplete="list">
+      <ul class="sugbox" id="sug" role="listbox" hidden></ul></div>
+    <button class="btn" id="todo-estado" type="button" hidden>Ver o estado todo</button>
+    <p class="note" id="note" role="status"></p>
+  </section>
+
+  <main class="main">
+    <div class="view" id="v-painel"><div class="inner" id="painel"></div><p class="autoria">Criado por <b>Glicélio Corrêa</b> · <a href="mailto:glicelio.santos@edu.mt.gov.br">glicelio.santos@edu.mt.gov.br</a><br>© 2026 Glicélio Corrêa · Código sob licença MIT</p></div>
+    <div class="view" id="v-mapa" hidden><div class="inner" id="mapa-v"></div></div>
+    <div class="view" id="v-ranking" hidden><div class="inner" id="ranking"></div></div>
+    <div class="view" id="v-biomas" hidden><div class="inner" id="biomas"></div></div>
+  </main>
+
+  <nav class="tabbar" aria-label="Navegação" style="--n:4">
+    <button type="button" data-view="painel" aria-pressed="true" style="--mc:var(--m-painel)"><svg class="dico" aria-hidden="true"><use href="#d-painel"/></svg>Painel</button>
+    <button type="button" data-view="mapa" aria-pressed="false" style="--mc:var(--m-mapa)"><svg class="dico" aria-hidden="true"><use href="#d-mapa"/></svg>Mapa</button>
+    <button type="button" data-view="ranking" aria-pressed="false" style="--mc:var(--m-rank)"><svg class="dico" aria-hidden="true"><use href="#d-rank"/></svg>Ranking</button>
+    <button type="button" data-view="biomas" aria-pressed="false" style="--mc:var(--m-bioma)"><svg class="dico" aria-hidden="true"><use href="#d-bioma"/></svg>Biomas</button>
+  </nav>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const semAcento = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const fmt = n => n == null ? "–" : Number(n).toLocaleString("pt-BR");
+const fmtC = n => n >= 10000 ? (n / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 0}) + " mil" : n >= 1000 ? (n / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " mil" : String(n);
+const dd = iso => { const [a, m, d] = String(iso).slice(0, 10).split("-"); return `${d}/${m}/${a}`; };
+const ddm = iso => { const [, m, d] = String(iso).slice(0, 10).split("-"); return `${d}/${m}`; };
+const MES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const store = {
+  get(k){ try { return JSON.parse(localStorage.getItem("ambienteja:" + k)); } catch { return null; } },
+  set(k, v){ try { localStorage.setItem("ambienteja:" + k, JSON.stringify(v)); } catch {} },
+};
+const PADRAO = {uf: 51, mun: 5106752};
+const VIEWS = ["painel", "mapa", "ranking", "biomas"];
+let META = null, BR = null, MUN = [], MUN_POR_ID = new Map(), UFS = {};
+const CACHE = new Map();
+const S = {uf: null, mun: null, view: "painel", d: null};
+
+async function getJSON(url){
+  const r = await fetch(url, {cache: "no-cache"});
+  if (!r.ok) throw new Error(url + ": " + r.status);
+  return r.json();
+}
+function toast(t){
+  const el = document.createElement("div"); el.className = "toast"; el.textContent = t; el.setAttribute("role", "status");
+  document.body.append(el); setTimeout(() => el.remove(), 2600);
+}
+function nota(t, aviso){ const n = $("#note"); n.textContent = t || ""; n.classList.toggle("warn", !!aviso); }
+const nomeMun = id => MUN_POR_ID.get(id)?.[1] || "";
+const siglaUF = uf => UFS[uf]?.[0] || "";
+const nomeUF = uf => UFS[uf]?.[1] || "";
+const lugar = () => S.mun ? nomeMun(S.mun) : nomeUF(S.uf);
+
+/* ===================== dicas (balões) ===================== */
+const DICAS = {
+  foco: "<b>Foco de calor</b> é um ponto onde o satélite viu temperatura muito alta no chão. Pode ser incêndio, queimada controlada (preparo de pasto ou roça) ou outra fonte de calor. <b>Não é o mesmo que um incêndio.</b> Vários focos vistos juntos podem ser um incêndio só.",
+  ref: "<b>Satélite de referência.</b> O INPE compara um ano com outro usando sempre o mesmo satélite (AQUA, passagem da tarde). Assim a conta é justa: satélites novos veem mais focos e bagunçariam a comparação. Por isso os números daqui são menores que os de “todos os satélites”.",
+  periodo: "<b>Mesmo período</b> = de 1º de janeiro até o dia da última leitura, em cada ano. Comparar o ano que está passando com o ano passado inteiro não vale: o ano atual ainda não acabou.",
+  parcial: "<b>Mês parcial.</b> O mês em andamento ainda não terminou, por isso a barra é listrada: o número vai crescer até o fim do mês.",
+  sete: "<b>Últimos 7 dias</b> somam os focos de <b>todos os satélites</b> (mais completo para acompanhar o dia a dia). Por isso o número é maior do que o da comparação anual, que usa um satélite só.",
+  risco: "<b>Risco de fogo</b> é a previsão do INPE de quão fácil é o fogo se espalhar ali (de 0 a 1): depende dos dias sem chuva, da umidade e do tipo de vegetação.",
+  frp: "<b>FRP</b> (potência radiativa do fogo, em megawatts) mede a energia do foco. Quanto maior, mais intenso o fogo naquele ponto.",
+  bioma: "<b>Bioma</b> é o grande tipo de vegetação da região: Amazônia, Cerrado, Pantanal, Mata Atlântica, Caatinga e Pampa. Um município pode ter pedaços de mais de um.",
+};
+const T = (k, txt) => `<span class="tip" tabindex="0" data-tip="${k}">${txt}</span>`;
+let balao = null, alvoTip = null, abertoEm = 0;
+function mostrarDica(el){
+  const txt = DICAS[el.dataset.tip]; if (!txt) return;
+  if (!balao){ balao = document.createElement("div"); balao.className = "bubble"; balao.setAttribute("role", "tooltip"); balao.id = "balao"; document.body.append(balao); }
+  if (alvoTip !== el) abertoEm = Date.now();
+  alvoTip = el; balao.innerHTML = txt; balao.hidden = false; el.setAttribute("aria-describedby", "balao");
+  const r = el.getBoundingClientRect(), b = balao.getBoundingClientRect(), m = 8;
+  const emCima = r.top - b.height - 10 > m;
+  let x = r.left + r.width / 2 - b.width / 2; x = Math.max(m, Math.min(x, innerWidth - b.width - m));
+  const y = emCima ? r.top - b.height - 10 : r.bottom + 10;
+  balao.style.left = x + "px"; balao.style.top = y + "px"; balao.dataset.pos = emCima ? "top" : "bottom";
+  balao.style.setProperty("--ax", Math.max(12, Math.min(b.width - 12, r.left + r.width / 2 - x)) + "px");
+}
+function esconderDica(){ if (balao) balao.hidden = true; if (alvoTip) alvoTip.removeAttribute("aria-describedby"); alvoTip = null; }
+function ligarDicas(){
+  const tocou = matchMedia("(hover: none)");
+  document.addEventListener("pointerover", e => { if (e.pointerType === "touch") return; const t = e.target.closest("[data-tip]"); if (t && t !== alvoTip) mostrarDica(t); });
+  document.addEventListener("pointerout", e => { if (e.pointerType === "touch") return; const t = e.target.closest("[data-tip]"); if (t && !t.contains(e.relatedTarget)) esconderDica(); });
+  document.addEventListener("focusin", e => { const t = e.target.closest?.("[data-tip]"); if (t) mostrarDica(t); });
+  document.addEventListener("focusout", e => { if (e.target.closest?.("[data-tip]")) esconderDica(); });
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-tip]");
+    if (t && (tocou.matches || e.pointerType === "touch" || e.detail === 0)){
+      e.preventDefault(); e.stopPropagation();
+      if (alvoTip === t && Date.now() - abertoEm > 450) esconderDica(); else mostrarDica(t);
+      return;
+    }
+    if (!t) esconderDica();
+  }, true);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") esconderDica(); });
+  addEventListener("scroll", esconderDica, true); addEventListener("resize", esconderDica);
+}
+
+/* ===================== dados ===================== */
+async function carregarUF(uf){
+  if (!META.ufs.includes(siglaUF(uf))) return null;
+  if (!CACHE.has(uf)) CACHE.set(uf, getJSON(`data/focos/${uf}.json`).catch(e => { CACHE.delete(uf); throw e; }));
+  return CACHE.get(uf);
+}
+const ANO = () => META.ano_atual;
+const soma = a => a.reduce((s, x) => s + x, 0);
+/* série de um município (ou do estado todo): {a: {ano: [12]}, p: {ano: n}} */
+function serie(){
+  const d = S.d; if (!d) return {a: {}, p: {}};
+  if (S.mun){ const m = d.m[S.mun]; return m ? {a: m.a, p: m.p} : {a: {}, p: {}}; }
+  const a = {}, p = {};
+  for (const m of Object.values(d.m)){
+    for (const [ano, v] of Object.entries(m.a)){ const x = (a[ano] ||= Array(12).fill(0)); v.forEach((n, i) => { x[i] += n; }); }
+    for (const [ano, n] of Object.entries(m.p)) p[ano] = (p[ano] || 0) + n;
+  }
+  return {a, p};
+}
+const per = (s, ano) => s.p[ano] || 0;
+const tot = (s, ano) => s.a[ano] ? soma(s.a[ano]) : 0;
+const rotPeriodo = () => `1º/jan a ${ddm(META.referencia)}`;
+function variacao(atual, ant){
+  if (!ant) return atual ? {txt: "ano passado: 0", cls: "var-sobe"} : {txt: "sem focos nos dois anos", cls: "var-igual"};
+  const v = Math.round((atual - ant) * 100 / ant);
+  return v === 0 ? {txt: "igual", cls: "var-igual"} : {txt: (v > 0 ? "+" : "−") + Math.abs(v) + "%", cls: v > 0 ? "var-sobe" : "var-desce"};
+}
+function fonte(){
+  const antigo = (Date.now() - new Date(META.ultima_leitura + "T12:00:00")) / 864e5;
+  return `<p class="src">Fonte: INPE, Programa Queimadas (dados abertos). Satélite de referência ${META.satelite_ref.replace("_M-T", "")}. Última leitura de satélite: ${dd(META.ultima_leitura)}. Dados coletados em ${dd(META.coletado_em)}.${antigo > 3 ? ` <b class="fogo">Atenção: a última leitura tem ${Math.floor(antigo)} dias; o INPE pode estar atrasado.</b>` : ""}</p>`;
+}
+const AVISO_FOCO = `<div class="aviso"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4.5a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8zM10.5 11h3v7h-3z"/></svg>
+  <div>${T("foco", "Foco de calor")} <b>não é o mesmo que incêndio</b>: é um ponto que o satélite viu quente (pode ser queimada controlada). A comparação com os anos anteriores usa só o ${T("ref", "satélite de referência")}, no ${T("periodo", "mesmo período")} de cada ano.</div></div>`;
+
+/* ===================== local ===================== */
+function preencherUFs(){
+  const disp = new Set(META.ufs);
+  $("#uf").innerHTML = Object.entries(UFS).sort((a, b) => a[1][0].localeCompare(b[1][0]))
+    .map(([cod, [sg]]) => `<option value="${cod}" ${disp.has(sg) ? "" : "disabled"}>${sg}</option>`).join("");
+}
+async function trocarUF(uf, mun){
+  S.uf = uf; S.mun = mun ?? null; $("#uf").value = uf;
+  $("#cidade").value = S.mun ? nomeMun(S.mun) : "";
+  const box = document.createElement("div"); box.className = "loading"; box.textContent = "Carregando focos de " + nomeUF(uf) + "…";
+  $(".main").append(box);
+  try { S.d = await carregarUF(uf); }
+  catch { S.d = null; nota("Não foi possível carregar os dados deste estado. Verifique a conexão e tente de novo.", true); }
+  finally { box.remove(); }
+  salvarLocal(); renderTudo();
+}
+function escolherMun(id){
+  const m = MUN_POR_ID.get(id); if (!m) return;
+  fecharSug();
+  if (+m[3] !== S.uf){ trocarUF(m[3], id); return; }
+  S.mun = id; $("#cidade").value = m[1]; nota("");
+  salvarLocal(); renderTudo();
+}
+function salvarLocal(){ store.set("local", {uf: S.uf, mun: S.mun}); $("#todo-estado").hidden = !S.mun; }
+let sugIdx = -1, sugItens = [];
+function abrirSug(){
+  const q = semAcento($("#cidade").value.trim());
+  const daUF = MUN.filter(m => m[3] === S.uf);
+  let itens;
+  if (!q) itens = [];
+  else {
+    const comeca = daUF.filter(m => m[4].startsWith(q)), meio = daUF.filter(m => !m[4].startsWith(q) && m[4].includes(q));
+    itens = [...comeca, ...meio];
+    if (itens.length < 3){ const fora = MUN.filter(m => m[3] !== S.uf && m[4].startsWith(q)); itens = [...itens, ...fora]; }
+    itens = itens.slice(0, 8);
+  }
+  sugItens = itens; sugIdx = itens.length ? 0 : -1;
+  const ul = $("#sug");
+  if (!q){ ul.hidden = true; $("#cidade").setAttribute("aria-expanded", "false"); return; }
+  ul.innerHTML = itens.length ? itens.map((m, i) => `<li role="option" id="sug-${i}" data-id="${m[0]}" aria-selected="${i === sugIdx}">${esc(m[1])}<small>${esc(siglaUF(m[3]))}</small></li>`).join("")
+    : `<li class="vazio" role="option" aria-disabled="true">Nenhum município com esse nome</li>`;
+  ul.hidden = false; $("#cidade").setAttribute("aria-expanded", "true");
+}
+function fecharSug(){ $("#sug").hidden = true; $("#cidade").setAttribute("aria-expanded", "false"); }
+function marcarSug(i){
+  sugIdx = i;
+  document.querySelectorAll("#sug li[data-id]").forEach((li, k) => li.setAttribute("aria-selected", k === i));
+  $("#cidade").setAttribute("aria-activedescendant", i >= 0 ? "sug-" + i : "");
+}
+function setView(v, {semHash} = {}){
+  if (!VIEWS.includes(v)) v = "painel";
+  S.view = v;
+  document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v));
+  VIEWS.forEach(k => { $("#v-" + k).hidden = k !== v; });
+  if (!semHash && location.hash !== "#" + v) history.replaceState(null, "", "#" + v);
+  $("#v-" + v).scrollTop = 0;
+  if (v === "mapa") desenharMapa();
+}
+function renderTudo(){ renderPainel(); renderMapaTela(); renderRanking(); renderBiomas(); if (S.view === "mapa") desenharMapa(); }
+const cabecalho = (titulo, sub, cor) => `<div class="vhead"><div class="vtit"><span class="ptile" style="--mc:${cor}"><svg class="dico" aria-hidden="true"><use href="#d-${cor === "var(--m-painel)" ? "painel" : cor === "var(--m-mapa)" ? "mapa" : cor === "var(--m-rank)" ? "rank" : "bioma"}"/></svg></span><div><h2>${titulo}</h2><p>${sub}</p></div></div></div>`;
+const semDados = () => `<div class="box"><p class="sem-dado">Os dados de focos de calor deste estado ainda não foram coletados. Escolha outro estado (por enquanto, Mato Grosso).</p></div>`;
+
+/* ===================== painel ===================== */
+const refMes = () => +META.referencia.slice(5, 7);
+/* total do mês de referência até o dia de referência (parcial) e dos meses fechados */
+function parcialMes(s, ano){
+  const fechados = (s.a[ano] || []).slice(0, refMes() - 1);
+  return Math.max(0, per(s, ano) - soma(fechados));
+}
+function ultimos7(){
+  const fim = new Date(META.ultima_leitura + "T12:00:00"), dias = [];
+  for (let k = 6; k >= 0; k--){ const d = new Date(fim); d.setDate(d.getDate() - k); dias.push(d.toISOString().slice(0, 10)); }
+  const cont = Object.fromEntries(dias.map(d => [d, 0]));
+  for (const r of S.d?.rec || []){ if (S.mun && r[2] !== S.mun) continue; if (r[3] in cont) cont[r[3]]++; }
+  return dias.map(d => [d, cont[d]]);
+}
+function rankMuns(ano){
+  const d = S.d; if (!d) return [];
+  return MUN.filter(m => m[3] === S.uf).map(m => ({cod: m[0], nome: m[1], p: d.m[m[0]]?.p?.[ano] || 0, p0: d.m[m[0]]?.p?.[ano - 1] || 0}))
+    .sort((x, y) => y.p - x.p || x.nome.localeCompare(y.nome, "pt-BR"));
+}
+function graficoAnos(s){
+  const ano = ANO(), anos = META.anos.filter(y => y > ano - 10 && y <= ano);
+  const max = Math.max(1, ...anos.map(y => per(s, y)));
+  return `<div class="chart" role="img" aria-label="Focos no mesmo período (${rotPeriodo()}), ano a ano">${anos.map(y => {
+    const v = per(s, y), h = Math.max(2, Math.round(v * 110 / max));
+    return `<div class="c ${y === ano ? "atual" : y === ano - 1 ? "ant" : ""}" title="${y}: ${fmt(v)} focos"><span class="val">${fmtC(v)}</span><i style="height:${h}px"></i><b>${y === ano ? y : String(y).slice(2)}</b></div>`;
+  }).join("")}</div>`;
+}
+function graficoMeses(s){
+  const ano = ANO(), rm = refMes();
+  const val = (y, i) => {
+    if (y === ano && i + 1 > rm) return null;
+    if (i + 1 === rm) return parcialMes(s, y);
+    return (s.a[y] || [])[i] || 0;
+  };
+  const todos = [];
+  for (let i = 0; i < 12; i++) for (const y of [ano - 1, ano]) { const v = val(y, i); if (v != null) todos.push(v); }
+  const max = Math.max(1, ...todos);
+  return `<div class="mchart" role="img" aria-label="Focos mês a mês, ${ano - 1} e ${ano}">${MES.map((m, i) => {
+    const a = val(ano - 1, i), b = val(ano, i), parc = i + 1 === rm;
+    const h = v => v == null ? 0 : Math.max(v ? 2 : 0, Math.round(v * 120 / max));
+    return `<div class="g ${parc ? "mes-ref" : ""}"><div class="bars"><i class="a ${parc ? "parc" : ""}" style="height:${h(a)}px;${parc ? "background:repeating-linear-gradient(45deg,var(--accent) 0 3px,var(--verde-ano) 3px 6px)" : ""}" title="${m}/${ano - 1}: ${fmt(a)}"></i><i class="b ${parc ? "parc" : ""}" style="height:${h(b)}px" title="${m}/${ano}: ${b == null ? "ainda não chegou" : fmt(b)}"></i></div><b>${m}</b></div>`;
+  }).join("")}</div>`;
+}
+function tabelaMeses(s){
+  const ano = ANO(), rm = refMes();
+  const cel = (y, i) => y === ano && i + 1 > rm ? "–" : fmt(i + 1 === rm ? parcialMes(s, y) : (s.a[y] || [])[i] || 0) + (i + 1 === rm ? "*" : "");
+  return `<details class="tabela"><summary>Ver os números mês a mês</summary><div class="tablewrap"><table><thead><tr><th>Mês</th><th class="n">${ano - 1}</th><th class="n">${ano}</th></tr></thead><tbody>${MES.map((m, i) =>
+    `<tr><td style="text-transform:capitalize">${m}</td><td class="n">${cel(ano - 1, i)}</td><td class="n">${cel(ano, i)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="src">* mês em andamento: os dois anos contados só até o dia ${ddm(META.referencia)}.</p></details>`;
+}
+function renderPainel(){
+  const el = $("#painel");
+  if (!S.d){ el.innerHTML = cabecalho("Painel", esc(nomeUF(S.uf)), "var(--m-painel)") + semDados(); return; }
+  const s = serie(), ano = ANO(), a = per(s, ano), b = per(s, ano - 1), v = variacao(a, b);
+  const dias = ultimos7(), n7 = soma(dias.map(x => x[1])), maxD = Math.max(1, ...dias.map(x => x[1]));
+  let posTxt = "";
+  if (S.mun){
+    const r = rankMuns(ano), i = r.findIndex(x => x.cod === S.mun);
+    if (i >= 0) posTxt = `<p class="src">Entre os ${fmt(r.length)} municípios de ${esc(nomeUF(S.uf))}, ${esc(nomeMun(S.mun))} é o <b>${i + 1}º</b> em número de focos no ${T("periodo", "mesmo período")} de ${ano}${a === 0 ? " (empatado com os que não têm focos)" : ""}.</p>`;
+  }
+  const semHist = !Object.keys(s.a).length;
+  el.innerHTML = `
+    ${cabecalho(esc(lugar()), `${S.mun ? esc(nomeUF(S.uf)) + " · " : ""}focos de calor, ${rotPeriodo()} de cada ano`, "var(--m-painel)")}
+    ${AVISO_FOCO}
+    <div class="kpis">
+      <div class="kpi fogo"><div class="k">Focos em ${ano}</div><div class="v">${fmt(a)}</div><div class="s">${rotPeriodo()}</div></div>
+      <div class="kpi"><div class="k">Mesmo período de ${ano - 1}</div><div class="v">${fmt(b)}</div><div class="s">${rotPeriodo()}</div></div>
+      <div class="kpi ${b || a ? (a > b ? "sobe" : a < b ? "desce" : "") : ""}"><div class="k">Variação</div><div class="v">${v.txt.startsWith("+") || v.txt.startsWith("−") ? v.txt : "–"}</div><div class="s">${v.txt.startsWith("+") || v.txt.startsWith("−") ? (a > b ? "mais" : "menos") + " focos que no ano passado" : v.txt}</div></div>
+      <div class="kpi"><div class="k">Últimos 7 dias</div><div class="v">${fmt(n7)}</div><div class="s">até ${ddm(META.ultima_leitura)} · ${T("sete", "todos os satélites")}</div></div>
+    </div>
+    ${posTxt}
+    ${semHist ? `<div class="box"><p class="sem-dado">Nenhum foco de calor registrado em ${esc(lugar())} desde ${META.anos[0]} pelo satélite de referência.</p></div>` : `
+    <div class="box"><h3>Mesmo período, ano a ano <small>focos de ${rotPeriodo()}</small></h3>${graficoAnos(s)}
+      <div class="leg-pt"><span><i style="background:var(--fogo)"></i>${ano} (em andamento)</span><span><i style="background:var(--accent)"></i>${ano - 1}</span><span><i style="background:var(--verde-ano)"></i>anos anteriores</span></div></div>
+    <div class="box"><h3>Mês a mês <small>${ano - 1} × ${ano}</small></h3>${graficoMeses(s)}
+      <div class="leg-pt"><span><i style="background:var(--accent)"></i>${ano - 1}</span><span><i style="background:var(--fogo)"></i>${ano}</span><span>${T("parcial", "Listrado = mês em andamento")} (os dois anos contados até ${ddm(META.referencia)})</span></div>
+      ${tabelaMeses(s)}</div>`}
+    <div class="box"><h3>Últimos 7 dias <small>focos por dia, ${T("sete", "todos os satélites")}</small></h3>
+      <div class="dias">${dias.map(([d, n]) => `<div class="d ${n ? "" : "zero"}"><em>${n}</em><i style="height:${Math.max(2, Math.round(n * 70 / maxD))}px"></i><span>${ddm(d)}</span></div>`).join("")}</div>
+      <p class="src">Última leitura de satélite: <b>${dd(META.ultima_leitura)}</b>. O dia mais recente pode estar incompleto.</p></div>
+    ${semHist ? "" : `<div class="box"><h3>Ano a ano <small>mesmo período e ano completo</small></h3><div class="tablewrap"><table><thead><tr><th>Ano</th><th class="n">${rotPeriodo()}</th><th class="n">Ano completo</th></tr></thead><tbody>${
+      [...META.anos].reverse().map(y => `<tr class="${y === ano ? "sel" : ""}"><td>${y}</td><td class="n">${fmt(per(s, y))}</td><td class="n">${y === ano ? `<span class="pill">em andamento</span>` : fmt(tot(s, y))}</td></tr>`).join("")}</tbody></table></div></div>`}
+    ${fonte()}`;
+}
+
+/* ===================== mapa ===================== */
+let LEAFLET = null, MAPA = null, CAMADA = null;
+const S_MAPA = {so: "mun"};
+function garantirLeaflet(){
+  if (window.L) return Promise.resolve();
+  if (LEAFLET) return LEAFLET;
+  const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"; document.head.append(css);
+  LEAFLET = new Promise((ok, erro) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"; sc.onload = ok; sc.onerror = () => { LEAFLET = null; erro(); }; document.head.append(sc); });
+  return LEAFLET;
+}
+function renderMapaTela(){
+  const el = $("#mapa-v");
+  if (MAPA){ MAPA.remove(); MAPA = null; CAMADA = null; }
+  if (!S.d){ el.innerHTML = cabecalho("Mapa dos focos", esc(nomeUF(S.uf)), "var(--m-mapa)") + semDados(); return; }
+  el.innerHTML = `${cabecalho("Mapa dos focos", `${esc(lugar())} · últimos dias, até ${dd(META.ultima_leitura)}`, "var(--m-mapa)")}
+    <div class="box"><div class="mapabar chips"><span class="rot">Mostrar</span>
+      ${S.mun ? `<button type="button" class="chip" data-mapa="mun" aria-pressed="${S_MAPA.so === "mun"}" style="--c:var(--fogo)"><i></i>Só ${esc(nomeMun(S.mun))}</button>` : ""}
+      <button type="button" class="chip" data-mapa="uf" aria-pressed="${S_MAPA.so === "uf" || !S.mun}" style="--c:var(--fogo)"><i></i>Estado todo</button></div>
+      <div id="mapa" role="region" aria-label="Mapa dos focos de calor dos últimos dias"></div>
+      <p class="src" id="mapa-info"></p>
+      <div class="leg-pt"><span><i style="background:#E8590C"></i>foco em ${esc(S.mun ? nomeMun(S.mun) : nomeUF(S.uf))}</span>${S.mun ? `<span><i style="background:#8A8F8C"></i>focos no resto do estado</span>` : ""}</div>
+      <p class="src">Cada ponto é um ${T("foco", "foco de calor")} dos últimos 7 dias (${T("sete", "todos os satélites")}). Toque no ponto para ver data, satélite, ${T("risco", "risco de fogo")} e ${T("frp", "FRP")}. Mapa: © OpenStreetMap.</p></div>
+    ${fonte()}`;
+}
+async function desenharMapa(){
+  const el = $("#mapa"); if (!el || !S.d) return;
+  try { await garantirLeaflet(); } catch { el.innerHTML = `<p class="src" style="padding:16px">Não foi possível carregar o mapa (sem internet?).</p>`; return; }
+  if (!document.body.contains(el) || $("#v-mapa").hidden) return;
+  if (MAPA && MAPA.getContainer() !== el){ MAPA.remove(); MAPA = null; }
+  if (!MAPA){
+    MAPA = L.map(el, {preferCanvas: true, scrollWheelZoom: false});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(MAPA);
+    el.addEventListener("click", () => MAPA.scrollWheelZoom.enable(), {once: true});
+    new ResizeObserver(() => MAPA && MAPA.invalidateSize()).observe(el);
+  }
+  if (CAMADA) CAMADA.remove();
+  CAMADA = L.featureGroup().addTo(MAPA);
+  const so = S.mun && S_MAPA.so === "mun";
+  const rec = S.d.rec || [], meus = [];
+  let n = 0;
+  for (const r of rec){
+    const meu = S.mun && r[2] === S.mun;
+    if (so && !meu) continue;
+    n++;
+    const mk = L.circleMarker([r[0], r[1]], {radius: meu || !S.mun ? 5 : 3, color: "#fff", weight: meu ? 1 : .5, fillColor: meu || !S.mun ? "#E8590C" : "#8A8F8C", fillOpacity: meu || !S.mun ? .9 : .55});
+    mk.bindPopup(`<b>${esc(nomeMun(r[2]) || "Município não identificado")}</b><br>${dd(r[3])} · ${esc(String(r[6]).replace("_M-T", "").replace("_", " "))}<br>Risco de fogo: ${r[4] == null ? "sem dado" : String(r[4]).replace(".", ",")}<br>FRP: ${r[5] == null ? "sem dado" : String(r[5]).replace(".", ",") + " MW"}`);
+    mk.addTo(CAMADA);
+    if (meu) meus.push([r[0], r[1]]);
+  }
+  const info = $("#mapa-info");
+  const nMeus = meus.length;
+  info.textContent = S.mun ? `${fmt(nMeus)} foco${nMeus === 1 ? "" : "s"} em ${nomeMun(S.mun)} nos últimos 7 dias${so ? "" : `; ${fmt(n - nMeus)} no resto do estado`}.` : `${fmt(n)} focos em ${nomeUF(S.uf)} nos últimos 7 dias.`;
+  if (so && nMeus){ MAPA.fitBounds(L.latLngBounds(meus).pad(.25), {maxZoom: 12}); }
+  else if (so && !nMeus){ MAPA.setView(centroMun(), 10); info.textContent += " Nenhum ponto para mostrar: afaste o mapa ou escolha “Estado todo”."; }
+  else if (n){ MAPA.fitBounds(CAMADA.getBounds().pad(.05)); }
+  else MAPA.setView([-15.6, -56.1], 5);
+  setTimeout(() => MAPA && MAPA.invalidateSize(), 60);
+}
+function centroMun(){
+  // sem coordenadas do município: usa o centro dos pontos do estado
+  const rec = S.d.rec || [];
+  if (!rec.length) return [-15.6, -56.1];
+  return [rec.reduce((s, r) => s + r[0], 0) / rec.length, rec.reduce((s, r) => s + r[1], 0) / rec.length];
+}
+
+/* ===================== ranking ===================== */
+function renderRanking(){
+  const el = $("#ranking"), ano = ANO();
+  if (!S.d || !BR){ el.innerHTML = cabecalho("Ranking", esc(nomeUF(S.uf)), "var(--m-rank)") + semDados(); return; }
+  const ufs = Object.entries(BR.uf).map(([sg, anos]) => ({sg, p: anos[ano]?.[1] || 0, p0: anos[ano - 1]?.[1] || 0}))
+    .sort((x, y) => y.p - x.p || x.sg.localeCompare(y.sg));
+  const maxU = Math.max(1, ...ufs.map(x => x.p));
+  const minha = siglaUF(S.uf);
+  const rm = rankMuns(ano), maxM = Math.max(1, rm[0]?.p || 1);
+  let top = rm.slice(0, 15);
+  const iMeu = S.mun ? rm.findIndex(x => x.cod === S.mun) : -1;
+  const linhaM = (x, i) => { const v = variacao(x.p, x.p0); return `<tr class="click ${x.cod === S.mun ? "sel" : ""}" data-mun="${x.cod}"><td class="n">${i + 1}º</td><td>${esc(x.nome)}</td><td class="n">${fmt(x.p)} <span class="minibar" style="width:${Math.round(x.p * 60 / maxM)}px"></span></td><td class="n">${fmt(x.p0)}</td><td class="n ${v.cls}">${v.txt}</td></tr>`; };
+  el.innerHTML = `
+    ${cabecalho("Ranking", `focos de calor, ${rotPeriodo()} de ${ano} (${T("periodo", "mesmo período")} do ano passado ao lado)`, "var(--m-rank)")}
+    ${AVISO_FOCO}
+    <div class="box"><h3>Estados <small>${rotPeriodo()}</small></h3><div class="tablewrap"><table><thead><tr><th class="n">Pos.</th><th>Estado</th><th class="n">${ano}</th><th class="n">${ano - 1}</th><th class="n">Variação</th></tr></thead><tbody>${
+      ufs.map((x, i) => { const v = variacao(x.p, x.p0); return `<tr class="${x.sg === minha ? "sel" : ""}"><td class="n">${i + 1}º</td><td>${esc(c_nome(x.sg))}</td><td class="n">${fmt(x.p)} <span class="minibar" style="width:${Math.round(x.p * 60 / maxU)}px"></span></td><td class="n">${fmt(x.p0)}</td><td class="n ${v.cls}">${v.txt}</td></tr>`; }).join("")}</tbody></table></div>
+      <p class="src">Só estados com dados coletados aparecem completos. Estado destacado: ${esc(nomeUF(S.uf))}.</p></div>
+    <div class="box"><h3>Municípios de ${esc(nomeUF(S.uf))} <small>os 15 com mais focos${iMeu >= 15 ? " e o seu município" : ""}</small></h3><div class="tablewrap"><table><thead><tr><th class="n">Pos.</th><th>Município</th><th class="n">${ano}</th><th class="n">${ano - 1}</th><th class="n">Variação</th></tr></thead><tbody>${
+      top.map(linhaM).join("")}${iMeu >= 15 ? `<tr><td colspan="5" class="var-igual" style="text-align:center">…</td></tr>${linhaM(rm[iMeu], iMeu)}` : ""}</tbody></table></div>
+      <p class="src">Toque em um município para ver o painel dele. Município grande tende a ter mais focos: o número não mede “culpa”, só onde o satélite viu calor.</p></div>
+    ${fonte()}`;
+}
+const c_nome = sg => { const e = Object.values(UFS).find(u => u[0] === sg); return e ? e[1] : sg; };
+
+/* ===================== biomas ===================== */
+const ORDEM_BIO = ["Amazônia", "Cerrado", "Pantanal", "Mata Atlântica", "Caatinga", "Pampa"];
+function renderBiomas(){
+  const el = $("#biomas"), ano = ANO();
+  if (!S.d || !BR){ el.innerHTML = cabecalho("Biomas", esc(nomeUF(S.uf)), "var(--m-bioma)") + semDados(); return; }
+  const lista = (obj) => Object.entries(obj).map(([b, anos]) => ({b, p: anos[ano]?.[1] || 0, p0: anos[ano - 1]?.[1] || 0}))
+    .sort((x, y) => (ORDEM_BIO.indexOf(x.b) + 1 || 9) - (ORDEM_BIO.indexOf(y.b) + 1 || 9));
+  const tabela = (rows) => {
+    const t = soma(rows.map(x => x.p));
+    return `<div class="stackb" role="img" aria-label="Participação de cada bioma nos focos de ${ano}">${rows.filter(x => x.p).map(x => `<div class="bio-${x.b}" style="width:${x.p * 100 / t}%" title="${esc(x.b)}: ${fmt(x.p)}"></div>`).join("")}</div>
+      <div class="tablewrap"><table><thead><tr><th>Bioma</th><th class="n">${ano}</th><th class="n">${ano - 1}</th><th class="n">Variação</th></tr></thead><tbody>${rows.map(x => { const v = variacao(x.p, x.p0);
+        return `<tr><td><span class="dot bio-${x.b}"></span>${esc(x.b)}${t ? ` <small class="src">(${Math.round(x.p * 100 / t)}%)</small>` : ""}</td><td class="n">${fmt(x.p)}</td><td class="n">${fmt(x.p0)}</td><td class="n ${v.cls}">${v.txt}</td></tr>`; }).join("")}
+        <tr class="tot"><td>Total</td><td class="n">${fmt(t)}</td><td class="n">${fmt(soma(rows.map(x => x.p0)))}</td><td class="n ${variacao(t, soma(rows.map(x => x.p0))).cls}">${variacao(t, soma(rows.map(x => x.p0))).txt}</td></tr></tbody></table></div>`;
+  };
+  const uf = lista(S.d.bioma), br = lista(BR.bioma);
+  el.innerHTML = `
+    ${cabecalho("Biomas", `focos de calor por ${T("bioma", "bioma")}, ${rotPeriodo()}`, "var(--m-bioma)")}
+    ${AVISO_FOCO}
+    <div class="box"><h3>Em ${esc(nomeUF(S.uf))} <small>${rotPeriodo()}</small></h3>${uf.length ? tabela(uf) : `<p class="sem-dado">Sem focos registrados.</p>`}</div>
+    <div class="box"><h3>No Brasil <small>${rotPeriodo()}</small></h3>${tabela(br)}
+      <p class="src">Brasil: soma dos estados com dados coletados (${META.ufs.length} de 27).</p></div>
+    ${fonte()}`;
+}
+
+/* ===================== eventos e início ===================== */
+function ligar(){
+  ligarDicas();
+  document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+  addEventListener("hashchange", () => setView(location.hash.slice(1), {semHash: true}));
+  $("#uf").addEventListener("change", e => { const uf = +e.target.value; trocarUF(uf, null); });
+  $("#todo-estado").addEventListener("click", () => { S.mun = null; $("#cidade").value = ""; salvarLocal(); renderTudo(); });
+  const cid = $("#cidade");
+  cid.addEventListener("input", abrirSug);
+  cid.addEventListener("focus", () => { cid.select(); if (cid.value && cid.value !== nomeMun(S.mun)) abrirSug(); });
+  cid.addEventListener("keydown", e => {
+    if (e.key === "ArrowDown"){ e.preventDefault(); if (!$("#sug").hidden && sugItens.length) marcarSug((sugIdx + 1) % sugItens.length); else abrirSug(); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); if (sugItens.length) marcarSug((sugIdx - 1 + sugItens.length) % sugItens.length); }
+    else if (e.key === "Enter"){ if (sugIdx >= 0 && sugItens[sugIdx]){ e.preventDefault(); escolherMun(sugItens[sugIdx][0]); } }
+    else if (e.key === "Escape") fecharSug();
+  });
+  cid.addEventListener("blur", () => setTimeout(fecharSug, 150));
+  $("#sug").addEventListener("mousedown", e => { const li = e.target.closest("li[data-id]"); if (li){ e.preventDefault(); escolherMun(+li.dataset.id); } });
+  document.addEventListener("click", e => {
+    const mp = e.target.closest("[data-mapa]"); if (mp){ S_MAPA.so = mp.dataset.mapa; renderMapaTela(); desenharMapa(); return; }
+    const tm = e.target.closest("tr[data-mun]"); if (tm){ escolherMun(+tm.dataset.mun); setView("painel"); return; }
+  });
+}
+async function iniciar(){
+  ligar();
+  try {
+    const [mj, meta, br] = await Promise.all([getJSON("data/municipios.json"), getJSON("data/focos/meta.json"), getJSON("data/focos/brasil.json")]);
+    META = meta; BR = br; UFS = mj.ufs;
+    MUN = mj.m.map(m => [m[0], m[1], m[2], Math.floor(m[0] / 100000), semAcento(m[1])]);
+    MUN_POR_ID = new Map(MUN.map(m => [m[0], m]));
+  } catch {
+    nota("Não foi possível carregar os dados. Verifique a conexão e recarregue a página.", true); return;
+  }
+  preencherUFs();
+  const salvo = store.get("local");
+  const ini = salvo && UFS[salvo.uf] && META.ufs.includes(siglaUF(salvo.uf)) ? salvo : PADRAO;
+  setView(location.hash.slice(1) || "painel", {semHash: !location.hash});
+  await trocarUF(ini.uf, ini.mun && MUN_POR_ID.has(ini.mun) ? ini.mun : null);
+}
+iniciar();
+
+if ("serviceWorker" in navigator && location.protocol === "https:" && !window.claude)
+  navigator.serviceWorker.register("sw.js", {updateViaCache: "none"}).catch(() => {});
+})();
+</script>
+
+</body>
+</html>
