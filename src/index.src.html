@@ -115,6 +115,9 @@ symbol .da{fill:var(--c1, var(--accent))} symbol .db{fill:var(--c2, color-mix(in
 .tp-dia{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:12px; display:grid; gap:4px; text-align:center}
 .tp-dia .dw{font-weight:700; font-size:13px} .tp-dia .ic{font-size:30px; line-height:1.1} .tp-dia .tt{font-variant-numeric:tabular-nums; font-size:15px} .tp-dia .tt b{font-size:18px}
 .tp-dia .rs{font-size:12px; color:var(--muted); line-height:1.3} .tp-dia.hoje{border-color:var(--m-tempo); box-shadow:0 0 0 2px var(--accent-soft)}
+.tp-hoje{min-width:170px; max-width:230px; flex:0 1 210px} .tp-hoje .tp-dia{padding:14px} .tp-hoje .ic{font-size:38px} .tp-hoje .tt b{font-size:22px}
+@media (max-width:600px){.tp-hoje{flex:1 1 100%; max-width:none}}
+#tempo .vhead{align-items:center}
 .tp-seg{background:var(--surface); border:1px dashed var(--line); border-radius:var(--r); padding:12px 14px; font-size:13px; color:var(--muted)}
 .tp-seg b{color:var(--text)}
 .vhead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap}
@@ -763,8 +766,11 @@ async function renderTempo(){
   if (prev && prev.d){
     const hoje = new Date().toLocaleDateString("pt-BR");
     const dias = Object.entries(prev.d).map(([d, v]) => ({d, ...diaPrev(v)})).filter(x => x.resumo);
-    html += `<h2 class="rs-sec">Previsão para os próximos dias</h2><div class="tp-dias">${dias.map(x => `<div class="tp-dia${x.d === hoje ? " hoje" : ""}"><div class="dw">${esc(String(x.sem || "").replace("-Feira", "").slice(0, 12))} <span style="font-weight:400;color:var(--muted)">${esc(x.d.slice(0, 5))}</span></div><div class="ic" aria-hidden="true">${iconeTempo(x.resumo)}</div><div class="tt"><b>${x.tmax}°</b> / ${x.tmin}°</div><div class="rs">${esc(x.resumo)}</div></div>`).join("")}</div>
-      <p class="src">Máxima / mínima. Atualizado às ${hhmm(new Date(prev.em))}. Fonte: INMET.</p>`;
+    const hj = dias.find(x => x.d === hoje) || dias[0], outros = dias.filter(x => x !== hj);
+    const card = x => `<div class="tp-dia${x === hj ? " hoje" : ""}"><div class="dw">${x === hj && x.d === hoje ? "Hoje" : esc(String(x.sem || "").replace("-Feira", "").slice(0, 12))} <span style="font-weight:400;color:var(--muted)">${esc(x.d.slice(0, 5))}</span></div><div class="ic" aria-hidden="true">${iconeTempo(x.resumo)}</div><div class="tt"><b>${x.tmax}°</b> / ${x.tmin}°</div><div class="rs">${esc(x.resumo)}</div></div>`;
+    if (hj) html = cab.replace(/<\/div>$/, `<div class="tp-hoje">${card(hj)}</div></div>`) + html.slice(cab.length);
+    if (outros.length) html += `<h2 class="rs-sec">Próximos dias</h2><div class="tp-dias">${outros.map(card).join("")}</div>`;
+    html += `<p class="src">Máxima / mínima. Atualizado às ${hhmm(new Date(prev.em))}. Fonte: INMET.</p>`;
   } else html += `<div class="box"><p class="sem-dado">Não consegui buscar a previsão agora (${esc(String(erroP?.message || "sem conexão"))}).</p></div>`;
   html += seg;
   el.innerHTML = html;
