@@ -120,6 +120,9 @@ symbol .da{fill:var(--c1, var(--accent))} symbol .db{fill:var(--c2, color-mix(in
 .tp-hoje .dw{grid-area:dw; font-size:13px} .tp-hoje .ic{grid-area:ic; font-size:44px} .tp-hoje .tt{grid-area:tt} .tp-hoje .tt b{font-size:24px} .tp-hoje .rs{grid-area:rs}
 @media (max-width:600px){.tp-hoje{flex:1 1 100%}}
 #tempo .vhead{align-items:center}
+.tp-cid{display:block; font-size:1.18em; color:var(--m-tempo); line-height:1.05}
+.tp-cid small{display:block; font-family:var(--f-body); font-size:13px; font-weight:600; color:var(--muted); letter-spacing:.02em; margin-top:3px}
+#tempo .vhead p{font-weight:600; color:var(--text)}
 .tp-seg{background:var(--surface); border:1px dashed var(--line); border-radius:var(--r); padding:12px 14px; font-size:13px; color:var(--muted)}
 .tp-seg b{color:var(--text)}
 .vhead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap}
@@ -742,7 +745,7 @@ function diaPrev(v){ /* os 2 primeiros dias vêm por período; os demais vêm re
 }
 async function renderTempo(){
   const el = $("#tempo"), nome = S.mun ? nomeMun(S.mun) : null;
-  const cab = cabecalho("Tempo", nome ? esc(nome) + " · previsão e avisos de tempo" : "previsão e avisos de tempo", "var(--m-tempo)");
+  const cab = cabecalho(nome ? `<span class="tp-cid">${esc(nome)}<small>${esc(nomeUF(S.uf))}</small></span>` : "Tempo", nome ? "Tempo: previsão e avisos de tempo" : "previsão e avisos de tempo", "var(--m-tempo)");
   const seg = `<div class="tp-seg"><b>Em emergência, ligue 199 (Defesa Civil) ou 193 (Bombeiros).</b> Este app repassa a previsão e os avisos publicados pelo <a href="https://portal.inmet.gov.br/" target="_blank" rel="noopener">INMET</a>, mas não é canal oficial de emergência. Fonte: INMET (previsão e avisos de tempo), consultados ao vivo.</div>`;
   if (!S.mun){ el.innerHTML = cab + `<div class="box"><p class="sem-dado">Escolha uma cidade (no campo acima) para ver a previsão e os avisos de tempo dela.</p></div>` + seg; return; }
   const cod = S.mun, token = (S._tp = (S._tp || 0) + 1);
